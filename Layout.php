@@ -2,37 +2,18 @@
 require_once 'Datenbank.php';
 
 class Layout {
-	
+    
+    public function replaceLineFeeds($str) {
+        $str = str_replace("\n", "<br>", $str);
+        return $str;
+    }
+    
+    public function dateWithoutSeconds($sDate) {
+        $sDate = date('M jS Y H:i', strtotime($sDate));
+        return $sDate;
+    }
+    
 	function kopf($clanNr) {
-		session_start();
-		
-		// Input auffangen
-		$user = $_GET['user'];
-		$passwort = $_GET['pw'];
-		$bLogout = isset($_GET['logout']);
-		// echo "user = $user, Passwort = $passwort, logout = $logout\n";
-		$loginMessage = '';
-		
-		// logout?
-		if ($bLogout) {
-			$_SESSION['userid'] = '';
-			$loginMessage = 'Du wurdest auf eigenen Wunsch rausgeschmissen, Arschloch.';
-		}
-		
-		// login?
-		if ($user && $passwort) {
-			$db = new Datenbank();
-			$aUser = $db->checkLogin($user, $passwort);
-			if ($aUser) {
-				$_SESSION['userid'] = $aUser['userid'];
-				$_SESSION['username'] = $aUser['username'];
-				$loginMessage = 'Login erfolgreich, viel Spaß';
-			} else {
-				$_SESSION['userid'] = '';
-				$loginMessage = 'Login fehlgeschlagen. Idiot.';
-			}
-		}
-		
 		?><!DOCTYPE HTML>
 		<html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head>
 		<meta charset="UTF-8">
@@ -64,9 +45,7 @@ class Layout {
 		$navEntries = array(
 			1 => 'Home', 
 			2 => 'Contact', 
-			3 => 'ForsakenH00k',
-			4 => 'Comments',
-			5 => 'Register'
+			4 => 'Forum'
 			);
 		foreach ($navEntries as $key => $navEntry) {
 			if ($clanNr == $key) {
@@ -74,48 +53,40 @@ class Layout {
 				echo $navEntry;
 				echo '</span>'."\n";
 			} else {
-				echo '<a href="clan'.$key.'.php">'.$navEntry.'</a>'."\n";
+			    if ($key == 1) {
+			        echo '<a href="index.php">'.$navEntry.'</a>'."\n";
+			    } else {
+			        echo '<a href="clan'.$key.'.php">'.$navEntry.'</a>'."\n";
+			    }
 			}
-			if ($key < 5) {
-				echo ' &nbsp; &nbsp; <span class="strich"> | &nbsp; </span>&nbsp; ';
-			}
+			echo ' &nbsp; &nbsp; <span class="strich"> | &nbsp; </span>&nbsp; ';
+		}
+		// Letzten $nav Eintrag
+		if ($_SESSION['userid']) {
+			$lastEntry = 'Logout '.$_SESSION['username'];
+		} else {
+			$lastEntry = 'Login - Register';
+		}
+		if ($clanNr == 5) {
+		    echo '<span style="font-weight:bold; color:black;">'.$lastEntry.'</span>'."\n";
+		} else {
+		    echo '<a href="clan5.php">'.$lastEntry.'</a>'."\n";
 		}
 		?>
 		</span>
 		</td>
 		</tr>
-		<?
-		if ($clanNr < 5) {
-			?>
-			<tr>
-			<td colspan="2" style="padding:15px; text-align:left;">
-			<form method="get" action="clan<?= $clanNr ?>.php">
-			<?
-			if ($loginMessage) {
-				echo '<span style="color:red">'.$loginMessage.'</span><br>'."\n";
-			}
-			if ($_SESSION['userid']) {
-				echo 'Angemeldet als '.$_SESSION['username'];
-				?>
-				<input type="submit" value="Log out" name="logout">
-				<?
-			} else {
-				?>
-				Log in as <nobr>user <input type="text" name="user"></nobr>
-				<nobr>password <input type="text" name="pw"></nobr>
-				<input type="submit" value="Log in">
-				<?
-			}
-			?>
-			</form>
-			</td>
-			</tr>
-			<?
-		}
-		?>
+		
 		<tr>
 		<td colspan="2" style="padding:15px; text-align:left;">
 		<?
+		
+		if ($clanNr < 5) {
+            if (!$_SESSION['userid']) {
+                echo '<b>Please log in or sign up</b>';
+                echo '<br>';
+            }
+        }
 	}
 	
 	
@@ -124,11 +95,11 @@ class Layout {
 		</td>
 		</tr>
 		</table>
-		
 		<script src="img/features.js" type="text/javascript"></script>
 		</body>
 		</html>
 		<?
 	}
+	
 	
 }

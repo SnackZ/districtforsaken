@@ -9,3 +9,12 @@ function klappen(nr) {
 		bildchen.src = 'img/PLUS.png';
 	}
 }
+
+function reply(kommentarText, parentId) {
+    var answerArea = document.getElementById('answerArea');
+    answerArea.style.display = 'inline';
+    var hiddenParent = document.getElementById('hiddenParent');
+    hiddenParent.value = parentId;
+    var div = document.getElementById('parentComment');
+    div.innerHTML = '<span style="color:red">You are replying to:<br></span>' + kommentarText;
+}
