@@ -1,5 +1,5 @@
 <?
-require_once '../PHPMailer/PHPMailerAutoload.php';
+require_once 'PHPMailer/PHPMailerAutoload.php';
 class MyMailer {
     
     public function sendMail($mailBetreff, $mailText, $mailAdresse){
@@ -13,7 +13,7 @@ class MyMailer {
         $mail->Username = "mail@fritz-schmude.de";
         $mail->Password = "My69Mail";
         
-        $mail->From = "verify@districtforsaken.de";
+        $mail->From = "mail@fritz-schmude.de";
         $mail->FromName = "District Forsaken";
         
         $mail->addAddress($mailAdresse);
@@ -32,7 +32,7 @@ class MyMailer {
         if (!$mail->send()) {
             $ret = "Mailer Error: " . $mail->ErrorInfo;
         } else {
-            $ret = 'ok';
+            $ret = false;
         }
         
         return $ret;

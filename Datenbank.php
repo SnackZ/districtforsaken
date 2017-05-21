@@ -1,13 +1,13 @@
 <?
-define('DB_HOST', 'change_this');
-define('DB_NAME', 'change_this');
-define('DB_USER', 'change_this');
-define('DB_PASS', 'change_this');
+define('DB_HOST', 'snackz.lima-db.de');
+define('DB_NAME', 'db_369904_1');
+define('DB_USER', 'USER369904');
+define('DB_PASS', 'Ly2fhPrGg');
 
 class Datenbank {
 	
 	private function getPdo() {
-		if (!$GLOBALS['pdo']) {
+		if (!isset($GLOBALS['pdo']) || !$GLOBALS['pdo']) {
 			$GLOBALS['pdo'] = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASS);
 		}
 		return $GLOBALS['pdo'];

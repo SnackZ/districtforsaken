@@ -1,4 +1,5 @@
 <?
+ini_set('display_errors', 1);
 session_start();
 require_once('Layout.php');
 
@@ -8,9 +9,9 @@ $layout->kopf(4);
 
 $db = new Datenbank();
 
-$commentary = $_GET['comment'];
-$wurzelId = $_GET['wrz'];
-$parentId = $_GET['parent'];
+$commentary = isset($_GET['comment']) ? $_GET['comment'] : '';
+$wurzelId = isset($_GET['wrz']) ? (int) $_GET['wrz'] : 0;
+$parentId = isset($_GET['parent']) ? (int) $_GET['parent'] : 0;
 
 if ($wurzelId) {
     if ($commentary && $parentId) {
@@ -18,7 +19,7 @@ if ($wurzelId) {
     }
     ?>
     <div style="text-align:right;">
-    <a href="http://localhost/districtforsaken/clan4.php">Back to all threads</a>
+    <a href="clan4.php">Back to all threads</a>
     </div>
     <?
     $aBeitrag = $db->getBeitrag($wurzelId);

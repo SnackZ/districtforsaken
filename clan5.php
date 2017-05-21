@@ -1,12 +1,13 @@
 <?
+ini_set('display_errors', 1);
 session_start();
 require_once('Layout.php');
 require_once('MyMailer.php'); 
 /* var_dump($_GET);  */  
                    
 // Input auffangen
-$user = $_GET['user'];
-$passwort = $_GET['pw'];
+$user = isset($_GET['user']) ? $_GET['user'] : '';
+$passwort = isset($_GET['pw']) ? $_GET['pw'] : '';
 $bLogout = isset($_GET['logout']);
 // echo "user = $user, Passwort = $passwort, logout = $logout\n";
 $loginMessage = '';
@@ -15,7 +16,7 @@ $db = new Datenbank();
 $mailer = new MyMailer();
 
 // confirm
-$confirmCode = $_GET['code'];
+$confirmCode = isset($_GET['code']) ? $_GET['code'] : '';
 if ($confirmCode) {
     $bChecked = $db->checkCode($confirmCode);
     if ($bChecked) {
@@ -88,10 +89,14 @@ After verification you will be able to use our forums at districtforsaken.de !
 This email has been generated automatically!
 If you havn't signed up at our website, ignore this content!"
         ;  
-		$mailOk = $mailer->sendMail("Your verification for District Forsaken", $mailText, $newEmail);
-		$loginMessage = 'User "'.$newUser.'" has been signed up. 
+		$mailError = $mailer->sendMail("Your verification for District Forsaken", $mailText, $newEmail);
+		if ($mailError) {
+		    $loginMessage = 'There could not be sent an email to you. Please contact support!';
+		} else {
+		    $loginMessage = 'User "'.$newUser.'" has been signed up. 
 		    Please check your emails for the account verification.'
-        ;
+		    ;
+		}
 	}
 }
 
