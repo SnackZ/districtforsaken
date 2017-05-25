@@ -4,16 +4,16 @@ class MyMailer {
     
     public function sendMail($mailBetreff, $mailText, $mailAdresse){
         $mail = new PHPMailer;
-        $mail->SMTPDebug = 0; // 0=nix, 3=verbose
+        $mail->SMTPDebug = 1; // 0=nix, 3=verbose
         $mail->isSMTP();
         $mail->SMTPSecure = "tls";
-        $mail->Host = "smtp.strato.de";
-        $mail->Port = 587; // 465 ist veraltet!
+        $mail->Host = "mail.lima-city.de";
+        $mail->Port = 465; // 465 ist veraltet!
         $mail->SMTPAuth = true;
-        $mail->Username = "mail@fritz-schmude.de";
-        $mail->Password = "My69Mail";
+        $mail->Username = "mail@districtforsaken.de";
+        $mail->Password = "e9m5UMLFey";
         
-        $mail->From = "mail@fritz-schmude.de";
+        $mail->From = "mail@districtforsaken.de";
         $mail->FromName = "District Forsaken";
         
         $mail->addAddress($mailAdresse);

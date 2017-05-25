@@ -18,3 +18,12 @@ function reply(kommentarText, parentId) {
     var div = document.getElementById('parentComment');
     div.innerHTML = '<span style="color:red">You are replying to:<br></span>' + kommentarText;
 }
+
+function menuin(tdId) {
+    var td = document.getElementById('menuTd' + tdId);
+    td.style.backgroundColor = 'dimgrey';
+}
+function menuout(tdId) {
+    var td = document.getElementById('menuTd' + tdId);
+    td.style.backgroundColor = 'black';
+}

@@ -1,17 +1,17 @@
 body {
 	font-family:sans serif, arial;
 	font-size:large;
-	background-color:black; 
-	color:yellow; 
+	background-image: url("backgroundwebsite7.jpg");
+	color:white; 
 	text-align:center; 
 	padding:0; margin:0;
 }
 a {
-	color:brown;
+	color:#d0bb00;
 	text-decoration:none;
 }
 a:hover {
-	color:#333;
+	color:#ffe91e;
 	text-decoration:underline;
 }
 
@@ -20,10 +20,12 @@ a:hover {
   mobile, alte laptops
 ------------------------------------------------------------------------------*/
 .centertable {
+    border-radius:15px;
+	border:1px solid darkgrey; 
 	width:100%; 
 	margin:0; 
-	border:1px solid yellow; 
-	border-collapse:collapse;
+	background:#242222;
+	border-collapse:separate;
 }
 .strich {
 	display:none;
@@ -34,10 +36,12 @@ a:hover {
 ------------------------------------------------------------------------------*/
 @media only screen and (min-width: 1000px) {
 	.centertable {
+	    border-radius:15px;
+		border:1px solid darkgrey;
 		width:1000px; 
 		margin:auto; 
-		border:1px solid yellow; 
-		border-collapse:collapse;
+		background:#242222;
+		border-collapse:separate;
 	}
 	.strich {
 		display:inline;

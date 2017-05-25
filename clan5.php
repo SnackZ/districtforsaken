@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 session_start();
 require_once('Layout.php');
 require_once('MyMailer.php'); 
-/* var_dump($_GET);  */  
                    
 // Input auffangen
 $user = isset($_GET['user']) ? $_GET['user'] : '';
@@ -82,14 +81,16 @@ if (isset($_GET['username']) || isset($_GET['password']) || isset($_GET['email']
 		$mailText = "Dear $newUser,
 		
 Please activate your account at District Forsaken by clicking on the following link:
-Click here: http://localhost/districtforsaken/clan5.php?code=".$code."
+Click here: https://districtforsaken/clan5.php?code=".$code."
 
 After verification you will be able to use our forums at districtforsaken.de !
 
 This email has been generated automatically!
 If you havn't signed up at our website, ignore this content!"
-        ;  
-		$mailError = $mailer->sendMail("Your verification for District Forsaken", $mailText, $newEmail);
+        ;
+        $subject = "Your verification for District Forsaken";
+		$mailError = $mailer->sendMail($subject, $mailText, $newEmail);
+		// $mailError = mail($newEmail, $subject, $mailText);
 		if ($mailError) {
 		    $loginMessage = 'There could not be sent an email to you. Please contact support!';
 		} else {
@@ -106,7 +107,9 @@ $layout = new Layout();
 $layout->kopf(5);
 
 if ($loginMessage) {
+    echo '<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
 	echo '<div style="text-align:center; color:red">'.$loginMessage.'</div>'."\n";
+	echo '</div>';
 }
 
 ?>                 
@@ -114,35 +117,36 @@ if ($loginMessage) {
 <table style="margin:auto;">
 <?                                                
 
-if ($_SESSION['userid']) {
+if (isset($_SESSION['userid']) && $_SESSION['userid']) {
 	?>  
 	<form>
 	<tr>                                            
 	<td>
+	<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
 	<?
 	echo '<span style="color:red;">Logged in as '.$_SESSION['username'].'</span>';
 	?>  
-	<input type="submit" value="Log out" name="logout">
-	</td>
+	<input type="submit" value="Log out" name="logout" style="background:darkgrey;">
+	</div>
+	</td> 
 	</tr>
 	</form>
 	<?                                    
 } else {
 	?>
 	<form>
-	
-	<tr> 
-	<td style="text-align:center; color:red; font-weight:bold" colspan="2">
+	<div style="box-shadow: 2px 1px 4px #888888; text-align:center; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+	<span style="text-align:center; color:red; font-weight:bold" colspan="2">
 	Log in with an existing account
-	</td>
-	</tr>
-	
+	</span>
+	</div>
+	<br>
 	<tr> 
 	<td style="text-align:right;">
 	Log in as user 
 	</td>
 	<td>
-	<input type="text" name="user">
+	<input type="text" name="user" style="border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;">
 	</td>
 	</tr>
 	
@@ -151,15 +155,16 @@ if ($_SESSION['userid']) {
 	password 
 	</td>
 	<td>
-	<input type="password" name="pw">
+	<input type="password" name="pw" style="border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;">
 	</td>
 	</tr>
 	
 	<tr>
 	<td style="text-align:center;" colspan="2">
-	<input type="submit" value="Log in">
+	<input type="submit" value="Log in" style="background:darkgrey;">
 	</td>
 	</tr> 
+	
 	</form>
 	
 	<tr>
@@ -167,21 +172,25 @@ if ($_SESSION['userid']) {
 	&nbsp;
 	</td>
 	</tr>
-	   
+	</table>
+	<div style="box-shadow: 2px 1px 4px #888888; text-align:center; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+	Note: Please excuse, that the email confirmation is not operational right now. You have to contact support or an admin for activating your registered account.
+	</div>
+	<br>
+	<table style="margin:auto;">
 	<form>
-	
-	<tr> 
-	<td style="text-align:center; color:red; font-weight:bold" colspan="2">
+	<div style="box-shadow: 2px 1px 4px #888888; text-align:center; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+	<span style="text-align:center; color:red; font-weight:bold" colspan="2">
 	Register a new account
-	</td>
-	</tr>
-	
+	</span>
+	</div>
+	<br>
 	<tr>
 	<td style="text-align:right;">
 	username:
 	</td>
 	<td>
-	<input type="text" name="username">
+	<input type="text" name="username" style="border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;">
 	</td>
 	</tr>
 	
@@ -190,7 +199,7 @@ if ($_SESSION['userid']) {
 	password:
 	</td>
 	<td>
-	<input type="password" name="password">
+	<input type="password" name="password" style="border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;">
 	</td>
 	</tr>
 	
@@ -199,13 +208,13 @@ if ($_SESSION['userid']) {
 	e-mail:
 	</td>
 	<td>
-	<input type="text" name="email">
+	<input type="text" name="email" style="border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;">
 	</td>
 	</tr>
 	
 	<tr>
 	<td style="text-align:center;" colspan="2">
-	<input type="submit" value="Register">
+	<input type="submit" value="Register" style="background:darkgrey">
 	</td>
 	</tr> 
 	</form>

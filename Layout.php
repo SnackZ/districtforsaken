@@ -27,52 +27,65 @@ class Layout {
 		<br>
 		<table class="centertable">
 		<tr>
-		<td style="width:180px;font-size:0;padding:0;">
-		<img src="img/forsaken_clan2.jpg" style="width:180px; height:180px;border:none;margin:0;">
+		<td style="width:50px;font-size:0;padding:0;">
+		<img src="img/forsaken_clan2.jpg" style="border-radius:15px 0px 0px 0px; width:50px; height:50px;border:none;margin:0;">
 		</td>
 		
-		<td style="width:100% - 180px; background-color:yellow; color:black; text-align:center; padding:0;margin:0;">
+		<td style="border-radius:0px 15px 0px 0px; width:100% - 50px; height:50px; background:black; color:black; text-align:center; padding:0;margin:0;">
+		<!--
 		<div style="font-size:xx-large; font-weight:bold;">
 		District Forsaken
 		</div>
-		<br>
 		<div style="font-weight:bold; color:darkgrey;">
 		<a href="ts3server://62.104.20.100?port=10068">Click to join TeamSpeak3!</a>
 		</div>
-		<br>
+		-->
 		<span style="color:brown">
 		<?
 		$navEntries = array(
 			1 => 'Home', 
-			2 => 'Contact', 
+			2 => 'Contact',
+			3 => 'Surf-Server',
 			4 => 'Forum'
-			);
+		);
+		if (isset($_SESSION['userid']) && $_SESSION['userid']) {
+			$navEntries[5] = 'Logout '.$_SESSION['username'];
+		} else {
+			$navEntries[5] = 'Login - Register';
+		}
+		$navUrls = array(
+		    1 => 'index.php',
+		    2 => 'clan2.php',
+		    3 => 'clan3.php',
+		    4 => 'clan4.php',
+		    5 => 'clan5.php'
+		);
+		?>
+		<table style="margin:auto; width:750px;">
+		<tr>
+		<?
 		foreach ($navEntries as $key => $navEntry) {
 			if ($clanNr == $key) {
-				echo '<span style="font-weight:bold; color:black;">';
-				echo $navEntry;
-				echo '</span>'."\n";
+				$bgcolor = 'grey';
+				$onMouse = '';
 			} else {
-			    if ($key == 1) {
-			        echo '<a href="index.php">'.$navEntry.'</a>'."\n";
-			    } else {
-			        echo '<a href="clan'.$key.'.php">'.$navEntry.'</a>'."\n";
-			    }
+			    $bgcolor = 'black';
+			    $onMouse = ' onmouseover="javascript:menuin('.$key.');" 
+                onmouseout="javascript:menuout('.$key.');"'
+                ;
 			}
-			echo ' &nbsp; &nbsp; <span class="strich"> | &nbsp; </span>&nbsp; ';
-		}
-		// Letzten $nav Eintrag
-		if ($_SESSION['userid']) {
-			$lastEntry = 'Logout '.$_SESSION['username'];
-		} else {
-			$lastEntry = 'Login - Register';
-		}
-		if ($clanNr == 5) {
-		    echo '<span style="font-weight:bold; color:black;">'.$lastEntry.'</span>'."\n";
-		} else {
-		    echo '<a href="clan5.php">'.$lastEntry.'</a>'."\n";
-		}
+			
+			// jetzt kommt output  
+			echo '<td style="background-color:'.$bgcolor.'; width:150px; height:45px;"' 
+                .$onMouse
+                .' id="menuTd'.$key.'">'
+            ;
+			echo '<a href="'.$navUrls[$key].'">'.$navEntry.'</a>';
+			echo '</td>';
+		}   
 		?>
+		</tr>
+		</table>
 		</span>
 		</td>
 		</tr>
@@ -82,9 +95,11 @@ class Layout {
 		<?
 		
 		if ($clanNr < 5) {
-            if (!$_SESSION['userid']) {
-                echo '<b>Please log in or sign up</b>';
+		    if (!isset($_SESSION['userid']) || !$_SESSION['userid']) {
+		        echo '<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
+                echo '<b><span style="color:crimson">Please log in or sign up for using our Forum</span></b>';
                 echo '<br>';
+                echo '</div>';
             }
         }
 	}

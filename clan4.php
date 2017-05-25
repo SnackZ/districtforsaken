@@ -18,12 +18,14 @@ if ($wurzelId) {
         $db->createCommentary($commentary, $parentId);
     }
     ?>
+    <br>
     <div style="text-align:right;">
     <a href="clan4.php">Back to all threads</a>
     </div>
     <?
     $aBeitrag = $db->getBeitrag($wurzelId);
-    echo '<br>';
+    // echo '<br>';
+    echo '<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
     echo $aBeitrag['kommentar'];
     echo '<br>';
     echo '<br>';
@@ -35,7 +37,8 @@ if ($wurzelId) {
     echo '</span>';
     echo '<br>';
     echo '<a href="javascript:reply(\''.$aBeitrag['kommentar'].'\','.$wurzelId.');">reply</a>'."\n";
-    echo '<img src="img/p1gelb.png" width="100%" height="1px">';
+    echo '</div>';
+    echo '<br>';
     
     // Children anzeigen
     $aChildren = $db->getChildren($wurzelId);
@@ -45,21 +48,24 @@ if ($wurzelId) {
     $aKommentare = $db->getWurzeln();
      ?>
     <br>
+    <br>
     <?
     foreach ($aKommentare as $key => $komm) {
+        echo '<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
         $kommText = $layout->replaceLineFeeds($komm['kommentar']);
-        echo '<a style="color:yellow" href="clan4.php?wrz='.$komm['id'].'">'.$kommText.'</a>'."\n";
+        echo '<a style="color:#d0bb00" href="clan4.php?wrz='.$komm['id'].'">'.$kommText.'</a>'."\n";
         echo '<div style="font-size:small; color:darkgrey;">';
         echo '<span style="font-weight:bold">'.$komm['username'].'</span>';
         echo ', '."\n";
         $datum = $layout->dateWithoutSeconds($komm['datum']);
         echo $datum;
+        echo '</div>'; 
         echo '</div>';
-        echo '<br><br>'."\n";
-        
+        echo '<br>'."\n";
+
     }
 }   
-if ($_SESSION['userid']) {
+if (isset($_SESSION['userid']) && $_SESSION['userid']) {
     echo '<div id="answerArea" style="display:none">';
     echo '<div id="parentComment">';
     echo 'You are replying to: <br>';
@@ -68,9 +74,9 @@ if ($_SESSION['userid']) {
     echo '<form method="get" action="clan4.php" style="text-align:center;">';
     echo '<input type="hidden" id="hiddenParent" name="parent" value="">';
     echo '<input type="hidden" id="hiddenWurzel" name="wrz" value="'.$wurzelId.'">';
-    echo '<textarea name="comment" style="width:600px; height:100px"></textarea>';
+    echo '<textarea name="comment" style="width:600px; height:100px; border:1px solid darkgrey; border-radius:3px; padding: 4px; background:lightgrey;"></textarea>';
     echo '<br>';
-    echo '<input type="submit" value="Enter comment">';
+    echo '<input type="submit" value="Enter comment" style="background:darkgrey;">';
     echo '</form>';
     echo '</div>';
 }    
@@ -86,6 +92,7 @@ exit;
  function displayChildren($aChildren, $margin, $layout) {
     foreach ($aChildren as $child) {
         echo '<div style="margin-left:'.$margin.'px;">'."\n";
+        echo '<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
         echo '<span style="font-size:small; color:darkgrey;">';
         $datum = $layout->dateWithoutSeconds($child['datum']);
         echo $datum;
@@ -98,8 +105,8 @@ exit;
         echo $kommBr."\n";
         echo '<br>'."\n";
         echo '<a href="javascript:reply(\''.$child['kommentar'].'\','.$child['id'].');">reply</a>'."\n";
-        echo '<img src="img/p1gelb.png" width="100%" height="1px">';
         echo '</div>'."\n";
+        echo '</div>';
         displayChildren($child['children'], $margin + 20, $layout)."\n";
     }
 }
