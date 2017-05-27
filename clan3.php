@@ -1,4 +1,5 @@
 <?
+ini_set('error_log', 'error.log');
 session_start();
 require_once('Layout.php');
 
@@ -22,15 +23,27 @@ Our CS:GO surf server
 <br>
 <span style="font-size:x-large">
 <b>
+Beast Surf Community server Owner
+</b>
+</span>
+<br>
+<br>
+<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+- <a target=_blank href="http://steamcommunity.com/id/Kingerst">Kingerst </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
+<br>
+- <a target=_blank href="http://steamcommunity.com/id/Meerox">Meerox </a><span style="font-size:small; color:darkgrey;">[ENG]</span>
+</div><br>
+<span style="font-size:x-large">
+<b>
 Beast Surf Community server Admins
 </b>
 </span>
 <br>
 <br>
 <div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
-- <a target=_blank href="http://steamcommunity.com/id/Kingerst">Kingerst</a>
+- <a target=_blank href="http://steamcommunity.com/id/_Surprise_">Surprise </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
 <br>
-- <a target=_blank href="http://steamcommunity.com/id/Meerox">Meerox</a>
+- <a target=_blank href="http://steamcommunity.com/id/yarink">Yarink </a><span style="font-size:small; color:darkgrey;">[Dutch] [ENG]</span>
 </div>
 <br>
 <span style="font-size:x-large">

@@ -33,11 +33,119 @@ class Datenbank {
 		return $result;
 	}
 	
+	private function execute($sql, $params) {
+	    $q = $this->getPdo()->prepare($sql);
+		if (!$q->execute($params)) {
+			echo 'fehler bei '.$sql;
+			exit;
+		}
+	}
 	
-	// Forum bzw. clan4.php
-
+	
+	/**
+	 * username not yet taken?
+	 * @param string $username
+	 * @return bool true => username noch frei
+	 *              false => username schon belegt
+	 */
+	public function checkUsername($username) {
+        $sql = "SELECT username"
+        ." FROM user"
+		." WHERE username=:username"
+		;
+		$params = array(':username' => $username);
+		$row = $this->getRow($sql, $params);
+		// var_dump($row);
+		$bResult = !isset($row['username']);
+		return $bResult;
+	}
+	
+	
+	
+	// Posts für searchtool
+	public function dbSearch($search) {
+	    $inClause = $this->getWurzeln('sql');
+	    $sql = "SELECT k.kommentar, k.datum, k.user, k.id, u.username, u.moderator"
+	        ." FROM kommentare k"
+	        ." LEFT JOIN user u ON k.user=u.id"
+	        ." WHERE k.kommentar LIKE '%$search%'"
+	        ." AND k.id NOT ".$inClause
+	        ." AND k.deleted=0"
+	    ;
+	    $aRows = $this->getAll($sql, array());
+	    return $aRows;
+	}
+	
+	// News bzw. Threads für index.php von Thread topic NEWS
+    public function getNews() {
+        $sql = "SELECT kommentar, datum"
+            ." FROM kommentare"
+            ." WHERE parent=1"
+            ." AND deleted=0"
+            ." ORDER BY datum DESC"
+            ." LIMIT 3"
+        ;
+        $news = $this->getAll($sql, array());
+        return $news;
+    }    
+    
+    
+    // ansicht 1 wurzel ids
+    public function getWurzeln($lang = '') {
+        $wurzeln = array(1, 17, 18, 19, 23, 31, 32);
+        if ($lang == 'sql') {
+            return 'IN ('.implode(',', $wurzeln).')';
+        } else {
+            return $wurzeln;
+        }
+    }
+    
+    
+    // Chef kommentar ID bei klickbaren latest threads
+    
+    public function getThreadId($kommId) {
+        $wurzeln = $this->getWurzeln();
+        if (in_array($kommId, $wurzeln)) {
+            return $kommId;
+        }
+        $sql = "SELECT parent"
+        ." FROM kommentare"
+        ." WHERE id=:id"
+        ;
+        $params = array(':id' => $kommId);
+		$row = $this->getRow($sql, $params);
+		if (in_array($row['parent'], $wurzeln) || !$row['parent']) {
+		    return $kommId;
+		} else {
+		    return $this->getThreadId($row['parent']);
+		}
+    }
+    
+    
+    // Latest Threads bei Forum anzeigen
+    
+    public function getLatestComms() {
+        $sql = "SELECT k.kommentar, k.datum, k.id, k.parent, u.username, u.moderator"
+            ." FROM kommentare k"
+            ." LEFT JOIN user u ON u.id = k.user"
+            ." WHERE k.deleted=0"
+            ." ORDER BY datum DESC"
+            ." LIMIT 3"
+        ;
+        $latestThreads = $this->getAll($sql, array());
+        return $latestThreads;
+    }
+    
+    
+	
+	/*
+	 * Forum bzw. clan4.php
+	 */
+	 
+	
+	// getBeitrag = oberster beitrag bei Children-Baum
     public function getBeitrag($beitragId) {
-        $sql = "SELECT u.username, k.id, k.datum, k.kommentar"
+        $sql = "SELECT u.username, k.id, k.datum, k.kommentar, k.parent, u.moderator"
         ." FROM kommentare k, user u"
 		." WHERE k.user=u.id"
 		." AND k.id=:beitragid"
@@ -47,11 +155,15 @@ class Datenbank {
 		return $getRow;
     }
     
+    
+    // children unter top-thread ansicht 3 -> löschbar
+    
     public function getChildren($beitragId) {
-        $sql = "SELECT u.username, k.id, k.datum, k.kommentar"
-        ." FROM kommentare k, user u"
-        ." WHERE k.user=u.id"
-        ." AND k.parent=:beitragId"
+        $sql = "SELECT u.username, k.id, k.datum, k.kommentar, u.moderator"
+        ." FROM kommentare k"
+        ." LEFT JOIN user u ON k.user=u.id"
+        ." WHERE k.parent=:beitragId"
+        ." AND k.deleted=0"
         ." ORDER BY datum DESC"
         ;
         $params = array(':beitragId' => $beitragId);
@@ -61,31 +173,39 @@ class Datenbank {
         }
         return $getAll;
     }
-        
-	/*
-    public function fakultaet($n) {
-        if ($n == 1) {
-            return 1;
-        }
-        return fakultaet($n - 1) * $n;
-    }
-    */
     
     
-	
-	
-	function getWurzeln() {
-		$sql = "SELECT u.username, k.id, k.datum, k.kommentar"
-		." FROM kommentare k, user u"
-		." WHERE k.user=u.id"
-		." AND k.parent=0"
+    // threads unter ansicht 2 -> löschbar
+    
+	public function getFirstChildren($parent) {
+		$sql = "SELECT u.username, k.id, k.datum, k.kommentar, u.moderator"
+		." FROM kommentare k"
+		." LEFT JOIN user u ON k.user=u.id"
+		." WHERE k.parent=:parent"
+        ." AND k.deleted=0"
 		." ORDER BY datum DESC"
 		;
-		$getAll = $this->getAll($sql, array());
-		return $getAll;
+		$params = array(':parent' => $parent);
+		$rows = $this->getAll($sql, $params);
+		
+		// Anzahl der children dazuspielen
+		$sqlAnzahl = "SELECT count(*) anzahl FROM kommentare"
+		    ." WHERE parent=:id AND deleted=0"
+		;
+		foreach ($rows as $nr => $row) {
+		    $rowAnz = $this->getRow($sqlAnzahl, array(':id' => $row['id']));
+		    $rows[$nr]['anzahlChildren'] = $rowAnz['anzahl'];
+		}
+		return $rows;
 	}
 	
-	// user, pw übergeben, userid und username im Erfolgfall bekommen
+	/** 
+	 * Check von name und passwort
+	 * @param string $user: name des users gecheckt
+	 * @param string $pw: passwort des users gecheckt
+	 * @return false, falls keine übereinstimmung in datenbank
+	 *         array mit userdaten falls login möglich
+	 */
 	function checkLogin($user, $pw) {
 	    $sql = "SELECT * FROM user WHERE username=:username";
 		$params = array(
@@ -104,7 +224,8 @@ class Datenbank {
 		if ($row['confirmed'] == 1) {
 		    $result = array(
 				'userid' => $row['id'],
-				'username' => $row['username']
+				'username' => $row['username'],
+				'moderator' => $row['moderator']
 			);
 			return $result;
 		} else {
@@ -139,51 +260,45 @@ class Datenbank {
 		}
 		$id = $row['id'];
 		$sql = "UPDATE user SET confirmed=1 WHERE id=:id";
-		$q = $this->getPdo()->prepare($sql);
 		$params = array(
 		    ':id' => $id
 		    );
-		if (!$q->execute($params)) {
-			echo 'fehler bei '.$sql;
-			exit;
-		}
+		$this->execute($sql, $params);
 		return true;
     }
-    
-    
     
 	public function createUser($name, $pw, $email, $code) {
 		$sql = "INSERT INTO user(username, passwort, email, code, confirmed)"
 			." VALUES(:username, :passwort, :email, :code, 0)"
 		;
-		$q = $this->getPdo()->prepare($sql);
 		$param = array(
 			':username' => $name,
 			':passwort' => $pw,
 			':email' => $email,
 			':code' => $code
 		);
-		if (!$q->execute($param)) {
-			echo 'fehler bei '.$sql;
-			exit;
-		}
+		$this->execute($sql, $param);
 	}
 	
-	function createCommentary($commentary, $parentId) {
+	public function deleteKomm($kommId) {
+	    $sql = "UPDATE kommentare SET deleted=1 WHERE id=:id";
+	    $params = array(
+	        ':id' => $kommId
+	        );
+	    $this->execute($sql, $params);
+	}
+	
+	public function createCommentary($commentary, $parentId) {
 		$sql = "INSERT INTO kommentare(parent, user, datum, kommentar)"
 			." VALUES(:parent, :user, :datum, :kommentar)"
 		;
-		$q = $this->getPdo()->prepare($sql);
 		$param = array(
 		    ':parent' => $parentId,
 			':user' => $_SESSION['userid'],
 			':datum' => date('Y-m-d H:i:s'),
 			':kommentar' => $commentary
 		);
-		if (!$q->execute($param)) {
-			echo 'fehler bei '.$sql;
-			exit;
-		}
+		$this->execute($sql, $param);
 	}
 	
 }

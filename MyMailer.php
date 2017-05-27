@@ -8,12 +8,12 @@ class MyMailer {
         $mail->isSMTP();
         $mail->SMTPSecure = "tls";
         $mail->Host = "mail.lima-city.de";
-        $mail->Port = 465; // 465 ist veraltet!
+        $mail->Port = 587; // 465 ist veraltet!
         $mail->SMTPAuth = true;
         $mail->Username = "mail@districtforsaken.de";
-        $mail->Password = "e9m5UMLFey";
+        $mail->Password = "durmoth123";
         
-        $mail->From = "mail@districtforsaken.de";
+        $mail->From = "verify@districtforsaken.de";
         $mail->FromName = "District Forsaken";
         
         $mail->addAddress($mailAdresse);

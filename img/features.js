@@ -19,6 +19,22 @@ function reply(kommentarText, parentId) {
     div.innerHTML = '<span style="color:red">You are replying to:<br></span>' + kommentarText;
 }
 
+function deleteKomm(kommId) {
+    var hiddenKomm = document.getElementById('kommId');
+    hiddenKomm.value = kommId;
+    var formular = document.getElementById('kommDelete');
+    formular.submit();
+}
+
+function displaythread(parentId) {
+    var answerArea = document.getElementById('threadArea');
+    answerArea.style.display = 'inline';
+    var hiddenParent = document.getElementById('hiddenParent');
+    hiddenParent.value = parentId;
+    var div = document.getElementById('parentComment');
+    div.innerHTML = '<span style="color:red">Your thread:<br></span>';  
+}
+
 function menuin(tdId) {
     var td = document.getElementById('menuTd' + tdId);
     td.style.backgroundColor = 'dimgrey';

@@ -14,8 +14,15 @@ class Layout {
     }
     
 	function kopf($clanNr) {
+	    /*
+	    $https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'];
+	    if (!$https) {
+	        header("Location:https://www.districtforsaken.de/", true, 301);
+	    }
+	    */
 		?><!DOCTYPE HTML>
-		<html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head>
+		<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+		<head>
 		<meta charset="UTF-8">
 		<title>District Forsaken</title>
 		<link rel="icon" href="img/forsaken_clan32p.jpg" sizes="32x32" />
@@ -66,7 +73,7 @@ class Layout {
 		<?
 		foreach ($navEntries as $key => $navEntry) {
 			if ($clanNr == $key) {
-				$bgcolor = 'grey';
+				$bgcolor = '#242222';
 				$onMouse = '';
 			} else {
 			    $bgcolor = 'black';
@@ -107,6 +114,21 @@ class Layout {
 	
 	function fuss() {
 		?>
+		
+		<tr>
+		<td colspan="2" style="text-align:center;">
+		<span style="font-size:x-small">
+		- by using our website, you consent to our use of cookies - if you do not agree please contact support -
+		</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td colspan="2" style="text-align:center;">
+		<a style="font-size:x-small" href="index.php">Home</a>
+		<a style="font-size:x-small" href="clan4.php">Forum</a>
+		<a style="font-size:x-small" href="clan2.php">Impressum</a>
+		<a style="font-size:x-small" href="clan2.php">Contact</a>
 		</td>
 		</tr>
 		</table>
