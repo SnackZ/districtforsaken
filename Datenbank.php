@@ -61,16 +61,219 @@ class Datenbank {
 	}
 	
 	
+	// passwort vergessen -> email checken ob vorhanden in datenbank
+	public function forgotCheckEmail($email) {
+	    $sql = "SELECT email"
+	        ." FROM user"
+	        ." WHERE email=:email"
+	    ;
+	    $params = array(':email' => $email);
+	    $row = $this->getRow($sql, $params);
+	    $bEmailExist = !isset($row['email']);
+	    return $row;
+	}
+	
+	// ob email bei registration bereits ienmal verwendet wurde
+	public function checkEmail($email) {
+	    $sql = "SELECT email"
+	    ." FROM user"
+	    ." WHERE email=:email"
+	    ;
+	    $params = array(':email' => $email);
+	    $row = $this->getRow($sql, $params);
+	    $bResult = !isset($row['email']);
+	    return $bResult;
+	}
+	
+	
+	// download ranking ob er auf download.php kann
+	public function getDownloadRank($id) {
+	    $sql = "SELECT download"
+	    ." FROM user"
+	    ." WHERE id=:id"
+	    ;
+	    $params = array(':id' => $id);
+	    $row = $this->getRow($sql, $params);
+	    return $row;
+	}
+	
+	// profil infos
+	public function getUserZeile($id) {
+		$sql = "SELECT id, username, email, code, confirmed, rank, link, beschreibung, gender, birthdate, country"
+		." FROM user"
+		." WHERE id=:id"
+		;
+		$params = array(':id' => $id);
+		$row = $this->getRow($sql, $params);
+		return $row;
+	}
+	
+	// SELECT COUNT(Anzahl) AS id_count, Anzahl FROM `table` GROUP BY Anzahl
+	
+	
+	// Anzahl der posts von bestimmtem profil
+	public function getUserPosts($id) {
+	    $sql = "SELECT count(parent) anzahl FROM kommentare"
+	    ." WHERE user=:id"
+	    ." AND parent<>1"
+	    ." AND parent<>2"
+	    ." AND parent<>17"
+	    ." AND parent<>18"
+	    ." AND parent<>19"
+	    ." AND parent<>23"
+	    ." AND parent<>31"
+	    ." AND parent<>32"
+	    ." AND deleted=0"
+	    ;
+	    $params = array(
+	        ':id' => $id,
+	    );
+	    $row = $this->getRow($sql, $params);
+	    return $row;
+	}
+	
+	// Anzahl der threads von bestimmtem profil
+	public function getUserThreads($id) {
+	    $sql = "SELECT count(parent) anzahl FROM kommentare"
+	    ." WHERE user=:id"
+	    ." AND parent IN (1, 2, 17, 18, 19, 23, 31, 32)"
+	    ." AND deleted=0"
+	    ;
+	    $params = array(
+	        ':id' => $id,
+	    );
+	    $row = $this->getRow($sql, $params);
+	    return $row;
+	}
+	
+	// beschreibung bei user tabelle updaten
+	public function updateProfilBeschreibung($id, $beschreibung) {
+		$sql = "UPDATE user"
+		." SET beschreibung=:beschreibung"
+		." WHERE id=:id"
+		;
+		$params = array(
+			':beschreibung' => $beschreibung,
+			':id' => $id
+		);
+		$this->execute($sql, $params);
+	}
+	
+	// gender updaten
+	public function updateGender($id, $gender) {
+	    $sql = "UPDATE user"
+	    ." SET gender=:gender"
+	    ." WHERE id=:id"
+	    ;
+	    $params = array(
+	        ':gender' => $gender,
+	        ':id' => $id
+	    );
+	    $this->execute($sql, $params);
+	}
+	
+	// country updaten
+	public function updateCountry($id, $country) {
+	    $sql = "UPDATE user"
+	    ." SET country=:country"
+	    ." WHERE id=:id"
+	    ;
+	    $params = array(
+	        ':country' => $country,
+	        ':id' => $id
+	    );
+	    $this->execute($sql, $params);
+	}	
+	
+	// alter/geburtsdatum updaten
+	public function updateBirthdate($id, $birthdate) {
+	    $sql = "UPDATE user"
+	    ." SET birthdate=:birthdate"
+	    ." WHERE id=:id"
+	    ;
+	    $params = array(
+	        ':birthdate' => $birthdate,
+	        ':id' => $id
+	    );
+	    $this->execute($sql, $params);
+	}
+	
+	// link updaten
+	public function updateSteamLink($id, $steamLink) {
+		$sql = "UPDATE user"
+		." SET link=:steamLink"
+		." WHERE id=:id"
+		;
+		$params = array(
+			':steamLink' => $steamLink,
+			':id' => $id
+		);
+		$this->execute($sql, $params);
+	}
+	
+	
+	// link für eigenes profil bekommen
+	public function getSteamLink($id) {
+		$sql = "SELECT link"
+		." FROM user"
+		." WHERE id=:id"
+		;
+		$row = $this->getRow($sql, array(':id' => $id));
+		if (!$row) {
+			echo 'No user with ID '.$id.' existing!';
+			exit;
+		}
+		return $row['link'];
+	}
+	
+	// username von wem latest thread bei ansicht 1 topics
+	public function getLatestThreadVerf($id) {
+	    $sql = "SELECT k.datum, k.parent, k.user, k.id, u.username, u.id userid"
+	        ." FROM kommentare k"
+	        ." LEFT JOIN user u ON k.user=u.id"
+	        ." WHERE k.deleted=0"
+	        ." AND k.parent=:id"
+	        ." ORDER BY datum DESC"
+	        ." LIMIT 1"
+	    ;
+	    $params = array(':id' => $id);
+	    $result = $this->getRow($sql, $params);
+	    return $result;
+	}
+	
+	// threadanzahl von topics bei ansicht 1 anzeigen
+	public function getAnzahlTopicThreads($id) {
+	    $sql = "SELECT count(parent) anzahl FROM kommentare"
+	        ." WHERE deleted=0"
+	        ." AND parent=:id"
+	    ;
+	    $params = array(':id' => $id);
+	    $result = $this->getRow($sql, $params);
+	    return $result;
+	}
+	
+	// Profile für searchtool
+	public function profilSearch($profilSearch) {
+		$sql = "SELECT id, username, rank"
+		." FROM user"
+		." WHERE username LIKE '%$profilSearch%'"
+		." OR id LIKE '%$profilSearch%'"
+		." AND confirmed=1"
+		;
+		$aRows = $this->getAll($sql, array());
+		return $aRows;
+	}
 	
 	// Posts für searchtool
 	public function dbSearch($search) {
 	    $inClause = $this->getWurzeln('sql');
-	    $sql = "SELECT k.kommentar, k.datum, k.user, k.id, u.username, u.moderator"
+	    $sql = "SELECT k.kommentar, k.datum, k.user, k.id, u.username, u.rank, u.id userid"
 	        ." FROM kommentare k"
 	        ." LEFT JOIN user u ON k.user=u.id"
 	        ." WHERE k.kommentar LIKE '%$search%'"
 	        ." AND k.id NOT ".$inClause
 	        ." AND k.deleted=0"
+	        ." ORDER BY datum DESC"
 	    ;
 	    $aRows = $this->getAll($sql, array());
 	    return $aRows;
@@ -89,10 +292,22 @@ class Datenbank {
         return $news;
     }    
     
+    // Neuestes member in der datenbank tabelle 'user'
+    public function getNewestMember() {
+        $sql = "SELECT username, id"
+            ." FROM user"
+            ." WHERE confirmed=1"
+            ." GROUP BY id"
+            ." ORDER BY id DESC"
+            ." LIMIT 1"
+        ;
+        $newestUser = $this->getAll($sql, array());
+        return $newestUser;
+    }
     
     // ansicht 1 wurzel ids
     public function getWurzeln($lang = '') {
-        $wurzeln = array(1, 17, 18, 19, 23, 31, 32);
+        $wurzeln = array(1, 2, 17, 18, 19, 23, 31, 32);
         if ($lang == 'sql') {
             return 'IN ('.implode(',', $wurzeln).')';
         } else {
@@ -121,19 +336,53 @@ class Datenbank {
 		}
     }
     
+    /*
+    // parent vom header post bei ansicht 3 rausfinden (thread id)
+    public function getVipParent($kommId) {
+        $wurzeln = $this->getThreadId($kommId);
+        $sql = "SELECT id, parent"
+            ." FROM kommentare"
+            ." WHERE deleted=0"
+            ." AND id=:id"
+        ;
+        $params = array('id' => $wurzeln);
+        $vipPosts = $this->getRow($sql, $params);
+        return $vipPosts;
+    }
+    */
+    /*
+    // parent von parent (bzw. ergebnis) von oben
+    public function getParentsParent($kommId) {
+        $aParents = $this->getVipParent($kommId);
+        $sql = "SELECT id, parent"
+            ." FROM kommentare"
+            ." WHERE deleted=0"
+            ." AND id=:id"
+        ;
+        $params = array('id' => $aParents['parent'])
+        $result = $this->getRow($sql, $params);
+        return $result;
+    }
+    */
     
     // Latest Threads bei Forum anzeigen
-    
     public function getLatestComms() {
-        $sql = "SELECT k.kommentar, k.datum, k.id, k.parent, u.username, u.moderator"
+        $sql = "SELECT k.kommentar, k.datum, k.id, k.parent, u.username, u.rank, u.id userid"
             ." FROM kommentare k"
             ." LEFT JOIN user u ON u.id = k.user"
             ." WHERE k.deleted=0"
+            ." AND k.parent!=1"
+            ." AND k.parent!=2"
             ." ORDER BY datum DESC"
-            ." LIMIT 3"
+            ." LIMIT 5"
         ;
         $latestThreads = $this->getAll($sql, array());
+        /*
+        $kommId = $latestThreads['k.id'];
+        $aNotShow = $this->getParentsParent($kommId);
+        */
         return $latestThreads;
+        
     }
     
     
@@ -145,7 +394,7 @@ class Datenbank {
 	
 	// getBeitrag = oberster beitrag bei Children-Baum
     public function getBeitrag($beitragId) {
-        $sql = "SELECT u.username, k.id, k.datum, k.kommentar, k.parent, u.moderator"
+        $sql = "SELECT u.username, u.id userid, k.id, k.datum, k.kommentar, k.parent, u.rank, u.country country"
         ." FROM kommentare k, user u"
 		." WHERE k.user=u.id"
 		." AND k.id=:beitragid"
@@ -159,7 +408,7 @@ class Datenbank {
     // children unter top-thread ansicht 3 -> löschbar
     
     public function getChildren($beitragId) {
-        $sql = "SELECT u.username, k.id, k.datum, k.kommentar, u.moderator"
+        $sql = "SELECT k.id, k.datum, k.kommentar, u.username, u.rank, u.id userid, u.country country"
         ." FROM kommentare k"
         ." LEFT JOIN user u ON k.user=u.id"
         ." WHERE k.parent=:beitragId"
@@ -178,7 +427,7 @@ class Datenbank {
     // threads unter ansicht 2 -> löschbar
     
 	public function getFirstChildren($parent) {
-		$sql = "SELECT u.username, k.id, k.datum, k.kommentar, u.moderator"
+		$sql = "SELECT u.username, u.id userid, u.country country, k.id, k.datum, k.kommentar, u.rank"
 		." FROM kommentare k"
 		." LEFT JOIN user u ON k.user=u.id"
 		." WHERE k.parent=:parent"
@@ -225,7 +474,7 @@ class Datenbank {
 		    $result = array(
 				'userid' => $row['id'],
 				'username' => $row['username'],
-				'moderator' => $row['moderator']
+				'rank' => $row['rank'],
 			);
 			return $result;
 		} else {
@@ -259,12 +508,33 @@ class Datenbank {
 			return false;
 		}
 		$id = $row['id'];
-		$sql = "UPDATE user SET confirmed=1 WHERE id=:id";
+		$sql = "UPDATE user SET confirmed=1, rank=1 WHERE id=:id";
 		$params = array(
 		    ':id' => $id
 		    );
 		$this->execute($sql, $params);
 		return true;
+    }
+    
+    public function getPassword($email) {
+        $sql = "SELECT passwort"
+            ." FROM user"
+            ." WHERE email=:email"
+        ;
+        $params = array(':email' => $email);
+        $pw = $this->getRow($sql, $params);
+        return $pw;
+    }
+    
+    // bei register ID für auto copy default picture
+    public function getUserIdRegister($username) {
+        $sql = "SELECT id"
+            ." FROM user"
+            ." WHERE username=:username"
+        ;
+        $params = array(':username' =>$username);
+        $id = $this->getRow($sql, $params);
+        return $id;
     }
     
 	public function createUser($name, $pw, $email, $code) {

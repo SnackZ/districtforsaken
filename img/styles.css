@@ -6,14 +6,26 @@ body {
 	text-align:center; 
 	padding:0; margin:0;
 }
+
 a {
 	color:#d0bb00;
 	text-decoration:none;
 }
+
 a:hover {
 	color:#ffe91e;
 	text-decoration:underline;
 }
+
+input:focus {
+    border:1px solid green;
+    background:#1e1e1e;
+}
+
+.optionSelects {
+    color:red;
+}
+
 .nohover {
     text-decoration:none;
     color:#ffe91e;
@@ -24,20 +36,112 @@ a:hover {
     color:brown;
 }
 
+.innerDiv {
+	color:#b4b4b4;
+	box-shadow:2px 1px 4px #888888;
+	background:#1f1f1f;
+	border-radius:5px;
+	border:1px solid dimgrey;
+	padding:5px;
+}
+
+.textArea {
+    color: #d0bb00;
+    background:black;
+    margin-top:2px;
+    margin-bottom:3px;
+    border:1px solid #d0bb00;
+    border-radius:3px;
+    padding: 4px;
+    width:800px;
+    height:100px;
+    /*
+    border:1px solid darkgrey;
+    border-radius:3px;
+    padding: 4px;
+    background:lightgrey;
+    */
+}
+
+.textDiv {
+    box-shadow: 2px 1px 4px #888888;
+    background:#312f2f;
+    border-radius:0px;
+    border:1px solid black;
+    padding:5px;
+}
+
+.recentDiv {
+    color:darkgrey;
+    border:1px solid black;
+    background:linear-gradient(#212200, #312f3c);
+    margin-left:-6px;
+    margin-right:-6px;
+    margin-bottom:-10px;
+}
+
+.textDiv2 {
+    box-shadow: 1px 1px 1px 1px #312f3c;
+    background:#312f2f;
+    border:1px solid #312f3c;
+    padding-bottom:5px;
+    padding-left:5px;
+    padding-right:5px;
+    margin-bottom:50px;
+}
+
+.inputSubmit {
+    font-size:medium;
+    font-weight:bold;
+    padding-top:2px;
+    padding-right:8px;
+    padding-bottom:3px;
+    padding-left:8px;
+    border-radius:2px;
+    background:black;
+    border:1px solid #d0bb00;
+    color:#d0bb00;
+}
+
+.inputText {
+    color: #d0bb00;
+    background:black;
+    margin-top:2px;
+    margin-bottom:3px;
+    border:1px solid #d0bb00;
+    border-radius:3px;
+    padding: 4px;
+}
+
+.tableStyle {
+  width: 100%;
+  table-layout: fixed;
+  height:30px;
+}
+.heightStyle {
+  height: 30px;
+}
+.cell2 {
+  width: 40%;
+}
+.cell3 {
+  width: 100%;
+}
 
 /*------------------------------------------------------------------------------
   mobile, alte laptops
 ------------------------------------------------------------------------------*/
 .centertable {
     border-radius:15px;
-	border:1px solid darkgrey; 
-	width:100%; 
-	margin:0; 
-	background:#242222;
-	border-collapse:separate;
-}
-.strich {
-	display:none;
+    border:1px solid grey;
+    width:1200px; 
+    margin:auto; 
+    background:#242222;
+    background: -webkit-linear-gradient(left top, #262626, #242222, 141414); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #262626, #242222, 141414); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #262626, #242222, #141414); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #262626, #242222, #141414); /* Standard syntax */
+    border-collapse:separate;
 }
 
 /*------------------------------------------------------------------------------
@@ -46,13 +150,14 @@ a:hover {
 @media only screen and (min-width: 1000px) {
 	.centertable {
 	    border-radius:15px;
-		border:1px solid darkgrey;
-		width:1000px; 
+		border:1px solid grey;
+		width:1200px; 
 		margin:auto; 
 		background:#242222;
+		background: -webkit-linear-gradient(left top, #262626, #242222, 141414); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(bottom right, #262626, #242222, 141414); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(bottom right, #262626, #242222, #141414); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(to bottom right, #262626, #242222, #141414); /* Standard syntax */
 		border-collapse:separate;
-	}
-	.strich {
-		display:inline;
 	}
 }

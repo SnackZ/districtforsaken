@@ -10,11 +10,11 @@ class MyMailer {
         $mail->Host = "mail.lima-city.de";
         $mail->Port = 587; // 465 ist veraltet!
         $mail->SMTPAuth = true;
-        $mail->Username = "mail@districtforsaken.de";
+        $mail->Username = "mail@beast-community.com";
         $mail->Password = "durmoth123";
         
-        $mail->From = "verify@districtforsaken.de";
-        $mail->FromName = "District Forsaken";
+        $mail->From = "verify@beast-community.com";
+        $mail->FromName = "Beast Community";
         
         $mail->addAddress($mailAdresse);
         

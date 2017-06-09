@@ -8,7 +8,7 @@ $layout = new Layout();
 $layout->kopf(2);
 ?>
 <tr>
-<td colspan="2" style="padding:15px; text-align:left;">
+<td rowspan="2" colspan="2" style="padding:15px; text-align:left; vertical-align:top;">
 <!--    <span style="font-size:x-large;">
 	<b>
 	How you can contact us
@@ -17,7 +17,7 @@ $layout->kopf(2);
 	<br>
 	<br>
 -->
-	<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+	<div class="textDiv">
 	For issues with the registration or forum, please contact our support via email or post a comment on the forums!
 	<br>
 	<span style="color:darkgrey; font-size:small">
@@ -25,8 +25,8 @@ $layout->kopf(2);
 	</span>
 	</div>
 	<br>
-	<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
-	Support email:  	<span style="font-weight:bold">support@districtforsaken.de</span>
+	<div class="textDiv">
+	Support email:  	<span style="font-weight:bold">support@beast-community.com</span>
 	<br>
 	<span style="color:darkgrey; font-size:small">
 	    The support won't answer to spam mails, neither to repeatedly requests on the forum!
@@ -38,7 +38,7 @@ $layout->kopf(2);
 	</span>
 	</div>
 	<br>
-	<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+	<div class="textDiv">
 	Impressum
 	<br>
 	<span style="color:darkgrey; font-size:small">
@@ -46,7 +46,7 @@ $layout->kopf(2);
 	    <br>
 	    Roland Schilffarth
 	    <br>
-	    Email: <b>roland@districtforsaken.de</b>
+	    Email: <b>roland@beast-community.com</b>
 	    <br>
 	</span>
 	</div>
@@ -58,12 +58,12 @@ $layout->kopf(2);
 	<br>
 	<div id="aufklappdiv1" style="display:none; width:500px;">
 		<br>
-		<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
-		- <a target=_blank href="http://steamcommunity.com/id/forsakenSnackZ/">SnackZ </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
+		<div class="textDiv">
+		- <a href="profil.php?profil=23">SnackZ </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
 		<br>
-		- <a target=_blank href="http://steamcommunity.com/id/Kingerst">Kingerst </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
+		- <a href="profil.php?profil=99">Kingerst </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
 		<br>
-		- <a target=_blank href="http://steamcommunity.com/id/Meerox">Meerox </a><span style="font-size:small; color:darkgrey;">[ENG]</span>
+		- <a href="profil.php?profil=117">Meerox </a><span style="font-size:small; color:darkgrey;">[ENG]</span>
 		<br>
 		<!--
 		- <a target=_blank href="http://steamcommunity.com/id/Jompey">Jompey</a>
@@ -79,14 +79,16 @@ $layout->kopf(2);
 	<br>
 	<div id="aufklappdiv2" style="display:none; width:500px;">
 		<br>
-		<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
-		- <a target=_blank href="http://steamcommunity.com/id/KyuubaMain">Kyuuba </a><span style="font-size:small; color:darkgrey;">[DE]</span>
+		<div class="textDiv">
+		- <a href="profil.php?profil=83">Kyuuba </a><span style="font-size:small; color:darkgrey;">[DE]</span>
 		<br>
-		- <a target=_blank href="http://steamcommunity.com/profiles/76561198195718107">Hand of NOD </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
+		- <a href="profil.php?profil=119">Hand of NOD </a><span style="font-size:small; color:darkgrey;">[DE] [ENG]</span>
 		<br>
-		- <a target=_blank href="http://steamcommunity.com/id/nicoonfire">Nicoonfire </a><span style="font-size:small; color:darkgrey;">[DE]</span>
+		- <a href="profil.php?profil=">Nicoonfire </a><span style="font-size:small; color:darkgrey;">[DE]</span>
 		<br>
-		- <a target=_blank href="http://steamcommunity.com/id/vzehhd">Ckatt </a><span style="font-size:small; color:darkgrey;">[ENG]</span>
+		- <a href="profil.php?profil=">Ckatt </a><span style="font-size:small; color:darkgrey;">[ENG]</span>
+		<br>
+		- <a href="profil.php?profil=83">Yarink </a><span style="font-size:small; color:darkgrey;">[ENG] [Dutch]</span>
 		<br>
 		</div>
 	</div>

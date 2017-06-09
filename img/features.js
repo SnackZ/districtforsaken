@@ -10,13 +10,14 @@ function klappen(nr) {
 	}
 }
 
-function reply(kommentarText, parentId) {
+function reply(parentId) {
+	var kommDiv = document.getElementById('komm' + parentId);
     var answerArea = document.getElementById('answerArea');
     answerArea.style.display = 'inline';
     var hiddenParent = document.getElementById('hiddenParent');
     hiddenParent.value = parentId;
     var div = document.getElementById('parentComment');
-    div.innerHTML = '<span style="color:red">You are replying to:<br></span>' + kommentarText;
+    div.innerHTML = '<span style="color:red">You are replying to:<br></span>' + kommDiv.innerHTML;
 }
 
 function deleteKomm(kommId) {

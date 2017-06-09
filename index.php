@@ -11,11 +11,42 @@ $layout->kopf(1);
 ?>
 <br>
 <span style="font-size:x-large">
-<b>Welcome to the District Forsaken!</b>
+<b>Welcome to the Beast Community!</b>
 </span>
 <br>
 <br>
-<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+<div class="textDiv">
+<table>
+<tr>
+<td style="text-align:center;">
+<?
+    $image =  basename("img/Beast_Community_Logo.png"); // you can here put the image path dynamically 
+    //echo $image;
+
+if (isset($_SESSION['userid']) && $_SESSION['userid']) {
+    ?>
+    <a class="nohover" download="<? echo $image; ?>" href="img/beastlogo1.png" title="Beast Logo title">
+    <img alt="logo" src="img/beastlogo120px.png" style="border:1px solid black; border-radius:3px;"> 
+    <br>
+    <span style="font-size:small; color:darkgrey;">500 by 500 pixel</span>
+    <br>
+    <input type="submit" value="download image" style="font-weight:normal;" class="inputSubmit">
+    </a>
+    <?
+} else {
+    ?>
+    <img alt="logo" src="img/beastlogo120px.png" style="border:1px solid black; border-radius:3px;"> 
+    <br>
+    <span style="font-size:small; color:darkgrey;">Please log in to <br> <span style="color:red">download image</span></span>
+    <?
+}
+?>
+</td>
+
+<td style="width:10px;">
+</td>
+
+<td>
 We are a little community of gamer that play primarily CS:GO and PUBG. We own some steam community groups, What’s App group and a Discord server.
 <br>
 <br>
@@ -24,21 +55,27 @@ In addition, we own a cs:go server for surfing and more. You can find the join-l
 <br>
 If you are interested in joining our community, just send to one of the qualified Admins a friendship request.
 You can find all information at Contact.
+</td>
+
+</tr>
+</table>
 </div>
+
+</div>
+
+
+
 <br>
 <span style="font-size:x-large">
 <b>Latest news</b>
 </span>
-<span>
-- <a href="clan4.php">view all news</a> -
-</span>
 <br>
 <br>
-<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+<div class="textDiv">
 <?
 $news = $db->getNews();
 foreach ($news as $number => $row) {
-    echo '<div style="color:#b4b4b4; box-shadow: 2px 1px 4px #888888; background:#1f1f1f; border-radius:5px; border:1px solid dimgrey; padding:5px;">';
+    echo '<div class="innerDiv">';
     $kommText = $layout->replaceLineFeeds($row['kommentar']);
     $maxLength = 100;
     if (strlen($kommText) > $maxLength) {
@@ -63,30 +100,27 @@ foreach ($news as $number => $row) {
 ?>
 </div>
 <br>
-<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+<div class="textDiv">
 Join Discord:
 <br>
 <br>
 - <a target="_blank" href="https://discord.gg/5xzR6xk">https://discord.gg/5xzR6xk</a>
 </div>
 <br>
-<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
-	Join District Forsaken at steam:
+<div class="textDiv">
+	Beast Community at steam:
 	<br>
 	<br>
-	- <a target="_blank" href="http://steamcommunity.com/groups/BeastSurfCommunity">Beast Combat Surf Community</a><br>
-	<br>
-	- <a target="_blank" href="http://steamcommunity.com/groups/districtoftheforsaken">District Forsaken Public</a>
-	<br>
-	<br>
-	- <a target="_blank" href="http://steamcommunity.com/groups/DistrictForsaken">District Forsaken Private</a>
+	- <a target="_blank" href="http://steamcommunity.com/groups/BeastSurfCommunity">Beast Combat Surf Community steam group</a><br>
 </div>
+<!--
 	<br>
-<div style="box-shadow: 2px 1px 4px #888888; background:#312f2f; border-radius:5px; border:1px solid dimgrey; padding:5px;">
+<div class="textDiv">
 	Subscribe our community at YouTube:
 	<br>
 	<br>
 	- <a target="_blank" href="https://www.youtube.com/channel/UCYmbmz2irdhEJNEseuWZsQQ">YouTube Channel</a>
 </div>
+-->
 <?
 $layout->fuss();
