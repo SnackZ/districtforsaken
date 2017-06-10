@@ -60,7 +60,8 @@ if (isset($_SESSION['userid']) && $_SESSION['userid']) {
             echo '<div class="textDiv">';
             echo '<div style="border:1px solid black; border-radius:3px;"><table><tr>';
             echo '<td>';
-            echo '<img src="userdata/'.$row['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;"> ';
+            $src = $layout->getUserFileName($row['userid']);
+            echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
             echo '</td><td>';
             echo '<a href="profil.php?profil='.$row['userid'].'">';
             echo '<span style="font-size:x-large; color:white; font-weight:bold;">';
@@ -210,7 +211,8 @@ if (isset($_SESSION['userid']) && $_SESSION['userid']) {
                     echo '<tr>';
                     echo '<td style="width:50px;">';
                     $kommBr = $layout->replaceLineFeeds($aBeitrag['kommentar']);
-                    echo '<img src="userdata/'.$aBeitrag['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;"> ';
+                    $src = $layout->getUserFileName($aBeitrag['userid']);
+                    echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
                     echo '</td><td style="width:150px;">';
                     echo '<span style="color:darkgrey;">';
                     echo '<a href="profil.php?profil='.$aBeitrag['userid'].'">';
@@ -222,7 +224,7 @@ if (isset($_SESSION['userid']) && $_SESSION['userid']) {
                     echo $showRank;
                     echo '</span>';
                     echo '</td><td style="color:darkgrey; font-size:small; text-align:left;">';
-                    echo 'Total posts: '.$totalThreads['anzahl'].'<br>Overall posts: '.$totalPosts['anzahl'].'<br>Origin: '.$aBeitrag['country'];
+                    echo 'Created threads: '.$totalThreads['anzahl'].'<br>Overall posts: '.$totalPosts['anzahl'].'<br>Origin: '.$aBeitrag['country'];
                     echo '</td><td style="color:darkgrey; text-align:right; width:175px;">';
                     echo $datum;
                     echo '</td></tr>';
@@ -266,7 +268,8 @@ if (isset($_SESSION['userid']) && $_SESSION['userid']) {
                         echo '<tr>';
                         echo '<td style="width:50px;">';
                         $kommBr = $layout->replaceLineFeeds($aBeitrag['kommentar']);
-                        echo '<img src="userdata/'.$aBeitrag['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;"> ';
+                        $src = $layout->getUserFileName($aBeitrag['userid']);
+                        echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
                         echo '</td><td style="width:150px;">';
                         echo '<span style="color:darkgrey;">';
                         echo '<a href="profil.php?profil='.$aBeitrag['userid'].'">';
@@ -278,7 +281,7 @@ if (isset($_SESSION['userid']) && $_SESSION['userid']) {
                         echo $showRank;
                         echo '</span>';
                         echo '</td><td style="color:darkgrey; font-size:small; text-align:left;">';
-                        echo 'Total posts: '.$totalThreads['anzahl'].'<br>Overall posts: '.$totalPosts['anzahl'].'<br>Origin: '.$aBeitrag['country'];
+                        echo 'Created threads: '.$totalThreads['anzahl'].'<br>Overall posts: '.$totalPosts['anzahl'].'<br>Origin: '.$aBeitrag['country'];
                         echo '</td><td style="color:darkgrey; text-align:right; width:175px;">';
                         echo $datum;
                         echo '</td></tr>';
@@ -423,7 +426,8 @@ function displayWurzeln($aKommentare, $layout, $bShowUser) {
             echo '<div style="border:1px solid black; border-radius:3px;">';
             echo '<table style="width:100%"><tr>';
             echo '<td style="width:50px;">';
-            echo '<img src="userdata/'.$komm['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;"> ';
+            $src = $layout->getUserFileName($komm['userid']);
+            echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
             echo '</td>';
             echo '<td style="width:150px;">';
             echo '<span style="color:white; font-size:x-large; font-weight:bold">'.$komm['username'].'</span>';
@@ -515,7 +519,8 @@ function displayChildren($aChildren, $margin, $layout) {
         echo '<div style="border:1px solid black; border-radius:3px;"><table style="width:100%;">';
         echo '<tr>';
         echo '<td style="width:50px;">';
-        echo '<img src="userdata/'.$child['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;"> ';
+        $src = $layout->getUserFileName($child['userid']);
+        echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
         echo '</td><td style="width:150px;">';
         echo '<a href="profil.php?profil='.$child['userid'].'"><span style="color:white; font-size:x-large; font-weight:bold;">'.$child['username'].'</span></a>'."\n";
         $datum = $layout->dateWithoutSeconds($child['datum']);

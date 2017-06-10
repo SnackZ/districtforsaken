@@ -70,6 +70,8 @@ if ($beschreibung && (isset($_SESSION['userid']) && $_SESSION['userid'])) {
 
 $profil = $db->getUserZeile($profilId);
 
+$totalNews = $db->getUserNEWS($profil['id']);
+
 $totalPosts = $db->getUserPosts($profil['id']);
 
 $totalThreads = $db->getUserThreads($profil['id']);
@@ -114,12 +116,16 @@ $bEditForms = (isset($_SESSION['userid']) && $_SESSION['userid'] == $profilId);
 
 $newBeschreibung = $layout->replaceLineFeeds($profil['beschreibung']);
 
+$joinDate = date('M jS Y', strtotime($profil['joindate']));
+
 $data = array(
 	'warningMessage' => $warningMessage,
 	'file' => $file,
 	'profilUsername' => $profil['username'],
 	'steamLink' => $profil['link'],
 	'userId' => $profil['id'],
+	'joinDate' => $joinDate,
+	'lastLogin' => $layout->dateWithoutSeconds($profil['lastlogin']),
 	'userRank' => $profilRank,
 	'bEditForms' => $bEditForms,
 	'searchResults' => $results,
@@ -131,6 +137,7 @@ $data = array(
 	'country' => $profil['country'],
 	'totalPosts' => $totalPosts['anzahl'],
 	'totalThreads' => $totalThreads['anzahl'],
+	'totalNews' => $totalNews['anzahl'],
 );
 
 ?>
@@ -269,29 +276,42 @@ if ($data['loggedIn']) {
 	</span>
 	</div>
 	<br>
-	<div class="innerDiv">
+	<div class="textDiv" style="font-size:small; color:darkgrey;">
 	<span style="font-size:x-large; font-weight:bold; color:white;">
 	User's Information
 	</span>
-	<br><br>
+	<br><br><div class="textDiv3">
 
-	<div class="textDiv">
+	Joined: 
+	<span style="color:white; font-weight:bold;">
+	<?= $data['joinDate'] ?>
+	</span>
+	<br>
+
+	Last login: 
+	<span style="color:white; font-weight:bold;">
+	<?= $data['lastLogin'] ?>
+	</span>
+	<br>
+
+	Total NEWS: 
+	<span style="color:white; font-weight:bold;">
+	<?= $data['totalNews'] ?>
+	</span>
+	<br>
+	
 	Total threads: 
 	<span style="color:white; font-weight:bold;">
 	<?= $data['totalThreads'] ?>
 	</span>
-	</div>
 	<br>
 	
-	<div class="textDiv">
 	Total posts: 
 	<span style="color:white; font-weight:bold;">
 	<?= $data['totalPosts'] ?>
 	</span>
 	</div>
-	<br>
-	
-	<div class="textDiv">
+	<div class="textDiv3">
 	Country:
 	<?
 
@@ -332,9 +352,8 @@ if ($data['loggedIn']) {
 	}
 	?>
 	</div>
-	<br>
 	
-	<div class="textDiv">
+	<div class="textDiv3">
 	Age:
 	<?
 	if ($data['bEditForms']) {
@@ -376,9 +395,8 @@ if ($data['loggedIn']) {
 	}
 	?>
 	</div>
-	<br>
 	
-	<div class="textDiv">
+	<div class="textDiv3">
 	Gender:
 	<?
 	if ($data['bEditForms']) {
@@ -401,12 +419,11 @@ if ($data['loggedIn']) {
 	}
 	?>
 	</div>
-	<br>
 	
 	<?
 	if ($data['bEditForms']) {
 		?>
-		<div class="textDiv">
+		<div class="textDiv3">
 		Your steamcommunity profile link
 		<button style="" class="inputSubmit" onclick="klappen(1);">
 		update
@@ -414,12 +431,13 @@ if ($data['loggedIn']) {
 		<?
 	} else {
 		?>
-		<div class="textDiv">
+		<div class="textDiv3">
 		<?= $profil['username'] ?>'s steamcommunity profile link
 		<?
 	}
 	?>
 	<br>
+	<span style="font-size:medium;">
 	<?
 	if ($data['steamLink']) {
 		echo '<a href="'.$data['steamLink'].'" target="_blank">'.$data['steamLink'].'</a>';
@@ -427,6 +445,7 @@ if ($data['loggedIn']) {
 		echo 'No link has been set up yet!';
 	}
 	?>
+	</span>
 	<br>
 	<div id="aufklappdiv1" style="display:none; width:500px;">
 	<br>

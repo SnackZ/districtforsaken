@@ -1,65 +1,50 @@
-Server rules aufklappdivs
+<?
+define('DB_HOST', 'snackz.lima-db.de');
+define('DB_NAME', 'db_369904_1');
+define('DB_USER', 'USER369904');
+define('DB_PASS', 'Ly2fhPrGg');
 
-<!--
-	<a href="javascript:klappen(1);">
-		<img src="img/PLUS.png" id="bildchen1">
-		No Hacking or using of any 3rd party software!
-	</a>
-	<br>
-	<div id="aufklappdiv1" style="display:none; width:500px;">
-        <br>
-        <div class="textDiv">
-        - Cheater will be banned from our server instantly!
-        <br>
-        - The ban from our server is unremoveable!
-        <br>
-        </div>
-    </div>
-    <br>
-	<a href="javascript:klappen(2);">
-		<img src="img/PLUS.png" id="bildchen2">
-		English only in voicechat!
-	</a>
-	<br>
-	<div id="aufklappdiv2" style="display:none; width:100%">
-	<br>
-	<div class="textDiv">
-		- Please stay polite towards any user on our server!
-		<br>
-		- If you are talking obtrusively any other language, you will be kicked!
-		<br>
-		- Ensuing to a second kick you will be banned!
-		<br>
-	</div>
-	</div>
-	<br>
-	<a href="javascript:klappen(3);">
-		<img src="img/PLUS.png" id="bildchen3">
-		About camping prohibitions!
-	</a>
-	<br>
-	<div id="aufklappdiv3" style="display:none; width:100%">
-	<br>
-	<div class="textDiv">
-		- No telecamping at all!
-		<br>
-		- No jailcamping!
-		<br>
-	</div>
-	</div>
-	<br>
-	<a href="javascript:klappen(4);">
-		<img src="img/PLUS.png" id="bildchen4">
-		Be courteous towards any admins of the server!
-	</a>
-	<br>
-	<div id="aufklappdiv4" style="display:none; width:100%">
-	<br>
-	<div class="textDiv">
-		- Being annoying ensues a ban from our server!
-		<br>
-		- The same rules are valid for any else, not only the admins!
-		<br>
-	</div>
-	</div>
--->
+
+$sql = "SELECT id, passwort"
+    ." FROM user"
+;
+$users = getAll($sql, array());
+
+foreach ($users as $user) {
+    $newPw = md5($user['passwort']);
+    $sqlUpdate = "UPDATE user"
+        ." SET passwort=:newpw"
+        ." WHERE id=:id"
+    ;
+    execute($sqlUpdate, array(':newpw' => $newPw, ':id' => $user['id']));
+}
+
+echo 'fertig';
+exit;
+
+// functions für test.php
+
+function getPdo() {
+    if (!isset($GLOBALS['pdo']) || !$GLOBALS['pdo']) {
+        $GLOBALS['pdo'] = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASS);
+    }
+    return $GLOBALS['pdo'];
+}
+
+function getAll($sql, $params) {
+    $q = getPdo()->prepare($sql);
+    if (!$q->execute($params)) {
+        echo 'fehler bei '.$sql;
+        exit;
+    }
+    $result = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+function execute($sql, $params) {
+    $q = getPdo()->prepare($sql);
+    if (!$q->execute($params)) {
+        echo 'fehler bei '.$sql;
+        exit;
+    }
+}

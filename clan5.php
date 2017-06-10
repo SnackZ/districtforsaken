@@ -54,24 +54,26 @@ if (isset($_POST['forgotEmail'])) {
     $email = $_POST['forgotEmail'];
     $bEmail = $db->forgotCheckEmail($email);
     $bOk = true;
+    $loginMessage = 'The email verification succeeded, there has been sent an email to you.';
 	if ($bOk && !$mailer->validateAddress($email)) {
 	    $bOk = false;
 	    $loginMessage = "The email address $email is not valid";
 	}
     if ($bOk && !$bEmail) {
-        $loginMessage = 'There could not be found a corresponding email address.';
         $bOk = false;
     }
     if ($bOk) {
-        $pw = $db->getPassword($email);
-        $stringPw = $pw['passwort'];
-        $mailText = "Herewith we send your password for your BEAST community profile.
+        $user = $db->getUserByEmail($email);
+        $code = $db->makeCode();
+        $db->setNewPasswordCode($user['id'], $code);
+        $mailText = "Herewith we send the link you can reset your password with.
 		
-Please excuse that the feature for changing your password completely is not operational right now!
+After logging in you will be able to use our forums at the BEAST community!
 
-After logging in you will be able to use our forums at https://www.beast-community.com !
+Please click the following link within the next 2 hours. If the link is expired already, please enter your email again on our website at the 'forgot password?' feature.
 
-Your password: $stringPw
+Click here for resetting your password:
+".BASE_URL."changepw.php?code=$code
 
 If you did not try to reset your password, another user must have tried to find out information about your profile.
 Please contact support instantly for solving the issue!
@@ -83,7 +85,6 @@ If you have not signed up at our website, ignore this content!"
         echo '<!--';        
 		$mailError = $mailer->sendMail($subject, $mailText, $email);
 		echo '-->';
-        $loginMessage = 'The email verification succeeded, there has been sent an email to you.';
     }
 }
 
@@ -133,14 +134,11 @@ if (isset($_POST['username']) || isset($_POST['password']) || isset($_POST['emai
 	if ($bOk){
 		$code = $db->makeCode();
 		$db->createUser($newUser, $newPw, $newEmail, $code);
-		// $userId = $db->getUserIdRegister($newUser);
-		// $ID = $userId['id'];
-		// @copy("userdata/0.jpg", "userdata/$ID.jpg");
-		// copy("userdata/0.jpg", "userdata/$ID.jpg");
 		$mailText = "Dear $newUser,
 		
 Please activate your account at the BEAST Community by clicking on the following link:
-Click here: https://www.beast-community.com/clan5.php?code=$code
+Click here:
+".BASE_URL."clan5.php?code=$code
 
 After verification you will be able to use our forums at https://www.beast-community.com !
 

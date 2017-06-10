@@ -6,6 +6,15 @@ $db = new Datenbank();
 
 class Layout {
     
+    public function getUserFileName($id) {
+        $userFile = 'userdata/'.$id.'.jpg';
+        if (is_file($userFile)) {
+            return $userFile;
+        } else {
+            return 'userdata/0.jpg';
+        }
+    }
+    
     public function replaceLineFeeds($str) {
         $str = str_replace("\n", "<br>", $str);
         return $str;
@@ -38,12 +47,10 @@ class Layout {
     }
     
 	function kopf($clanNr) {
-	    /*
 	    $https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'];
 	    if (!$https) {
 	        header("Location:https://www.beast-community.com/", true, 301);
 	    }
-	    */
 	    ?>
 		
 		<!DOCTYPE HTML>
@@ -171,7 +178,8 @@ class Layout {
 		    echo '<table style="width:300px;">';
 		    echo '<tr>';
 		    echo '<td>';
-		    echo '<img src="userdata/'.$row['userid'].'.jpg" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
+		    $src = $this->getUserFileName($row['userid']);
+		    echo '<img src="'.$src.'" style="border:1px solid black; border-radius:2px; vertical-align:middle; width:50px; height:50px;">';
 		    echo '</td><td style="text-align:left; width:250px;">';
 		    echo '<a href="profil.php?profil='.$row['userid'].'"><span style="color:white; font-size:large; font-weight:bold;">';
 		    echo $row['username'];
@@ -386,6 +394,13 @@ class Layout {
 		</table>
 		
 		<script src="img/features.js" type="text/javascript"></script>
+		
+		
+		
+		<!--
+		<img src="" style="width:1px; height:1px;">
+		-->
+		
 		</body>
 		</html>
 		<?

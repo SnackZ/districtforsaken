@@ -3,6 +3,14 @@ define('DB_HOST', 'snackz.lima-db.de');
 define('DB_NAME', 'db_369904_1');
 define('DB_USER', 'USER369904');
 define('DB_PASS', 'Ly2fhPrGg');
+/*
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'districtforsaken');
+define('DB_USER', 'root');
+define('DB_PASS', 'apfel32baum');
+*/
+define('BASE_URL', 'https://www.beast-community.com/');
+
 
 class Datenbank {
 	
@@ -97,9 +105,9 @@ class Datenbank {
 	    return $row;
 	}
 	
-	// profil infos
+	// profil infos alle spalten AUßER passwort
 	public function getUserZeile($id) {
-		$sql = "SELECT id, username, email, code, confirmed, rank, link, beschreibung, gender, birthdate, country"
+		$sql = "SELECT id, username, email, joindate, lastlogin, code, confirmed, rank, link, beschreibung, gender, birthdate, country"
 		." FROM user"
 		." WHERE id=:id"
 		;
@@ -115,14 +123,7 @@ class Datenbank {
 	public function getUserPosts($id) {
 	    $sql = "SELECT count(parent) anzahl FROM kommentare"
 	    ." WHERE user=:id"
-	    ." AND parent<>1"
-	    ." AND parent<>2"
-	    ." AND parent<>17"
-	    ." AND parent<>18"
-	    ." AND parent<>19"
-	    ." AND parent<>23"
-	    ." AND parent<>31"
-	    ." AND parent<>32"
+	    ." AND parent NOT IN (1, 2, 17, 18, 19, 23, 31, 32)"
 	    ." AND deleted=0"
 	    ;
 	    $params = array(
@@ -136,7 +137,21 @@ class Datenbank {
 	public function getUserThreads($id) {
 	    $sql = "SELECT count(parent) anzahl FROM kommentare"
 	    ." WHERE user=:id"
-	    ." AND parent IN (1, 2, 17, 18, 19, 23, 31, 32)"
+	    ." AND parent IN (2, 17, 18, 19, 23, 31, 32)"
+	    ." AND deleted=0"
+	    ;
+	    $params = array(
+	        ':id' => $id,
+	    );
+	    $row = $this->getRow($sql, $params);
+	    return $row;
+	}
+	
+	// Anzahl der verfassten NEWS von bestimmten profil
+	public function getUserNEWS($id) {
+	    $sql = "SELECT count(parent) anzahl FROM kommentare"
+	    ." WHERE user=:id"
+	    ." AND parent IN (1)"
 	    ." AND deleted=0"
 	    ;
 	    $params = array(
@@ -211,7 +226,7 @@ class Datenbank {
 		$this->execute($sql, $params);
 	}
 	
-	
+	/*
 	// link für eigenes profil bekommen
 	public function getSteamLink($id) {
 		$sql = "SELECT link"
@@ -225,7 +240,7 @@ class Datenbank {
 		}
 		return $row['link'];
 	}
-	
+	*/
 	// username von wem latest thread bei ansicht 1 topics
 	public function getLatestThreadVerf($id) {
 	    $sql = "SELECT k.datum, k.parent, k.user, k.id, u.username, u.id userid"
@@ -465,12 +480,25 @@ class Datenbank {
 		    // Keine Zeile mit username
 			return false;
 		}
-		if ($pw != $row['passwort']) {
+		if (md5($pw) != $row['passwort']) {
 		    // Passwort stimmt nicht überein
 		    return false;
 		}
 		
 		if ($row['confirmed'] == 1) {
+		    // last login setzen, updaten
+		    $lastLogin = date("Y-m-d H:i:s");
+		    $sqlUpdate = "UPDATE user"
+		        ." SET lastlogin=:lastlogin"
+		        ." WHERE id=:id"
+		    ;
+		    $pms = array(
+		        ':id' => $row['id'],
+		        ':lastlogin' => $lastLogin,
+		    );
+		    $this->execute($sqlUpdate, $pms);
+		    
+		    // ergebnis, login succeeded
 		    $result = array(
 				'userid' => $row['id'],
 				'username' => $row['username'],
@@ -483,6 +511,52 @@ class Datenbank {
 		}
 	}  
 	
+	// update user passwort, wenn alles gut gelaufen ist
+	public function updatePassword($id, $pw) {
+	    $sql = "UPDATE user"
+	        ." SET passwort=:pw, pwexpire=:pwexpire"
+	        ." WHERE id=:id"
+	    ;
+	    $params = array(
+	        ':id' => $id,
+	        ':pw' => md5($pw),
+	        ':pwexpire' => date("Y-m-d H:i:s"),
+	    );
+	    $this->execute($sql, $params);
+	    return true;
+	}
+	
+	// bei forgot password changepw.php ob code übereinstimmt => userid
+	public function getUserByCode($codeId) {
+	    $sql = "SELECT id, pwexpire"
+	        ." FROM user"
+	        ." WHERE pwcode=:codeid"
+	    ;
+	    $params = array(':codeid' => $codeId);
+	    $row = $this->getRow($sql, $params);
+	    return $row;
+	}
+	
+	// updateCode bei user password reset
+    public function setNewPasswordCode($userId, $code) {
+        $dt = new DateTime();
+        $dt->add(new DateInterval('PT2H'));
+        $pwExpire = $dt->format("Y-m-d H:i:s");
+        $sql = "UPDATE user"
+            ." SET pwcode=:code, pwexpire=:pwexpire"
+            ." WHERE id=:id"
+        ;
+        $params = array(
+            ':id' => $userId,
+            ':code' => $code,
+            ':pwexpire' => $pwExpire,
+        );
+        $this->execute($sql, $params);
+		return true;
+    }
+	
+	
+	// makecode bei user register
 	public function makeCode() {
 	    $code = '';
 	    
@@ -508,7 +582,7 @@ class Datenbank {
 			return false;
 		}
 		$id = $row['id'];
-		$sql = "UPDATE user SET confirmed=1, rank=1 WHERE id=:id";
+		$sql = "UPDATE user SET confirmed=1, rank=1, joindate=sysdate() WHERE id=:id";
 		$params = array(
 		    ':id' => $id
 		    );
@@ -516,25 +590,14 @@ class Datenbank {
 		return true;
     }
     
-    public function getPassword($email) {
-        $sql = "SELECT passwort"
+    public function getUserByEmail($email) {
+        $sql = "SELECT passwort, id"
             ." FROM user"
             ." WHERE email=:email"
         ;
         $params = array(':email' => $email);
-        $pw = $this->getRow($sql, $params);
-        return $pw;
-    }
-    
-    // bei register ID für auto copy default picture
-    public function getUserIdRegister($username) {
-        $sql = "SELECT id"
-            ." FROM user"
-            ." WHERE username=:username"
-        ;
-        $params = array(':username' =>$username);
-        $id = $this->getRow($sql, $params);
-        return $id;
+        $row = $this->getRow($sql, $params);
+        return $row;
     }
     
 	public function createUser($name, $pw, $email, $code) {
@@ -543,7 +606,7 @@ class Datenbank {
 		;
 		$param = array(
 			':username' => $name,
-			':passwort' => $pw,
+			':passwort' => md5($pw),
 			':email' => $email,
 			':code' => $code
 		);
